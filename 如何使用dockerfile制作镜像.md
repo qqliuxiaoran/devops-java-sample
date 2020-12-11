@@ -1,7 +1,7 @@
 DockerFile是相当于java中的类
 Hello.java ----> Hello.class
 
-#快速开始步骤:
+# 快速开始步骤:
   1. 在主机根目录下新建一个mydockerfile文件夹。
   2. 构建Dockerfile。Vim dockerFile。请不要在dockerfile中写#注释，可能会有问题
   3. 选择一个父奖项
@@ -11,14 +11,14 @@ Hello.java ----> Hello.class
        ```
   4. 构建自定义镜像：**Docker build -f dockerFile -t jackleo/mynginx:1.1v**  // -t设置镜像标签，-f指定构建文件位置
 
-#Dockerfile基础：
+# Dockerfile基础：
   1. 每条指令名大小且必须有值
   2. 从上至下顺序执行
   3. #表示注释
   4. 每条指令都会创建一个新的镜像层，并对镜像进行提交。# 分层架构
   5. 一定要有一个基础镜像(父镜像)
 
-#Dockerfile指令:
+# Dockerfile指令:
 - FROM:父镜像，FROM极有可能产生中间层镜像，不会占用太多磁盘
 	
 - COPY: 宿主机src 容器dest，复制到容器中 # COPY index.html /usr/local/tomcat/webapps/ROOT/。 COPY只能使用相对路径，且最好不要使用..
@@ -53,7 +53,7 @@ Hello.java ----> Hello.class
 
 - ONBUILD:如果有子镜像继承自己，执行onbuild
 
-#简单示范：构建Springboot项目镜像
+# 简单示范：构建Springboot项目镜像
   ```
   FROM java:openjdk-8-jre-alpine // 带jre8环境的父镜像，参考docker hub
   COPY target/xxx.jar /user/local/xxx/
