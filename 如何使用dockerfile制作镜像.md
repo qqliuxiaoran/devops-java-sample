@@ -1,16 +1,3 @@
-DockerFile是相当于java中的类
-Hello.java ----> Hello.class
-
-# 快速开始步骤:
-  1. 在主机根目录下新建一个mydockerfile文件夹。
-  2. 构建Dockerfile。Vim dockerFile。请不要在dockerfile中写#注释，可能会有问题
-  3. 选择一个父奖项
-       ```
-       FROM nginx:latest // 父镜像
-       CMD ["echo", "$PATH"] // 这个镜像run出容器时就echo一段字符串
-       ```
-  4. 构建自定义镜像：**Docker build -f dockerFile -t jackleo/mynginx:1.1v**  // -t设置镜像标签，-f指定构建文件位置
-
 # Dockerfile基础：
   1. 每条指令名大小且必须有值
   2. 从上至下顺序执行
@@ -62,4 +49,10 @@ Hello.java ----> Hello.class
   ENTRYPOINT: ["java", "-jar", "/user/local/xxx/xxx.jar"]
   ```
 
-	
+# 构建镜像
+- Docker build -f dockerFile -t docker.io/yukijudai/xxx:1.0.0
+- -f指定Dockerfile文件 -t 指定标签一般为 仓库地址/仓库命名空间/项目名:版本 这种格式
+
+# 上传至镜像仓库
+- echo "$DOCKER_PASSWORD" | docker login docker.io -u "yukijudai" --password-stdin # 登录docker hub
+- docker push docker.io/yukijudai/xxx:1.0.0 # 上传至镜像仓库
