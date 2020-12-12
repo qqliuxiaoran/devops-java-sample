@@ -7,7 +7,7 @@
       }
     }
 
-      parameters {
+      parameters { // 
           string(name:'TAG_NAME',defaultValue: '',description:'')
       }
 
@@ -21,9 +21,9 @@
           APP_NAME = 'devops-java-sample'
       }
 
-      stages {
+      stages { // 定义阶段
           stage ('checkout scm') {
-              steps {
+              steps { // 定义单个阶段执行的步骤
                   checkout(scm)
               }
           }
