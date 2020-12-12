@@ -33,5 +33,6 @@
         protocol: TCP
         port: 33060
         targetPort: 33060
+    type: NodePort
 
   ```
