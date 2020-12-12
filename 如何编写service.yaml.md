@@ -22,10 +22,11 @@
           version: v1
           app: mysql-master
     ports:
-      - name: tcp-3306
+      - name: tcp-3306 # 关联容器暴露端口名，见deploy.yaml
         protocol: TCP
-        port: 3306
-        targetPort: 3306
+        port: 3306 # pod暴露
+        targetPort: 3306 # service暴露端口
+        nodePort: 20001 # k8s暴露端口
       - name: tcp-33060
         protocol: TCP
         port: 33060
