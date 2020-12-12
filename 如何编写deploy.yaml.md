@@ -77,6 +77,17 @@
               - name: volume-k0vveu
                 readOnly: true
                 mountPath: /etc/mysql/conf.d
+            livenessProbe: # 检查容器健康状态策略
+              httpGet: # 有HTTP检查，tcp检查，命令行输入检查。像我们SpringBoot项目往往HTTP检查即可。这里我乱加的， MySQL容器明显是要tcp检查比较好
+                # 向容器8080端口/路径发Get请求，响应码为2xx,3xx表示健康
+                scheme: HTTP
+                path: /
+                port: 8080
+              initialDelaySeconds: 0 # 启动容器后多少秒后执行第一次健康检查
+              timeoutSeconds: 1 # 单位秒，1为最小值。检查超时时间，如果超时表示这次检查失败
+              periodSeconds: 10 # 检查频率
+              successThreshold: 1 # 检查失败后，连续几次成功才算成功。
+              failureThreshold: 3 # 检查失败后，再检查几次失败，容器就会被k8s杀掉重启
             #terminationMessagePath: /dev/termination-log
             #terminationMessagePolicy: File
             imagePullPolicy: IfNotPresent # 镜像拉取策略。Alawys=总是拉取，IfNotPresent已经存在就无需再拉取
