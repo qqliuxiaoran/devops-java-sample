@@ -1,7 +1,7 @@
 # 如何编写deploy.yaml?
-- 可参考kubesphere编写
+- 可参考kubesphere创建的工作负载编写
   ```
-  kind: Deployment  # 指定kind为Deployment，一个工作负载
+  kind: Deployment  # 指定kind为Deployment，一个工作负载。工作负载分为Deployment和StatefulSet，对应无状态服务和有状态服务。MySQL应为有状态服务，这里我选了无状态服务只为测试
   apiVersion: apps/v1 
   metadata:
     name: mysql-master-v1
@@ -13,7 +13,6 @@
       deployment.kubernetes.io/revision: '1'
       kubesphere.io/creator: saw
   spec:
-    progressDeadlineSeconds: 600 # 单位秒，600秒后确定程序已卡主
     replicas: 1 # 指定容器组副本数量。即pod副本数量
     selector:
       matchLabels: # 匹配上述Deployment
@@ -74,23 +73,23 @@
               - name: volume-k0vveu
                 readOnly: true
                 mountPath: /etc/mysql/conf.d
-            terminationMessagePath: /dev/termination-log
-            terminationMessagePolicy: File
-            imagePullPolicy: IfNotPresent
-        restartPolicy: Always
-        terminationGracePeriodSeconds: 30
+            #terminationMessagePath: /dev/termination-log
+            #terminationMessagePolicy: File
+            imagePullPolicy: IfNotPresent # 镜像拉取策略。Alawys=总是拉取，IfNotPresent已经存在就无需再拉取
+        restartPolicy: Always # 容器启动策略，即--restart=always
+        terminationGracePeriodSeconds: 30 # 优雅停机时间，单位秒
         dnsPolicy: ClusterFirst
-        serviceAccountName: default
-        serviceAccount: default
-        securityContext: {}
-        affinity: {}
-        schedulerName: default-scheduler
-    strategy:
-      type: RollingUpdate
+        #serviceAccountName: default
+        #serviceAccount: default
+        #securityContext: {}
+        #affinity: {}
+        #schedulerName: default-scheduler
+    strategy: # 容器更新机制
+      type: RollingUpdate # 滚动更新，建议使用。比如:guliamll-product镜像有更新，k8s是停机部分启动部分的方式更新
       rollingUpdate:
         maxUnavailable: 25%
         maxSurge: 25%
-    revisionHistoryLimit: 10
-    progressDeadlineSeconds: 600
+    revisionHistoryLimit: 10 # 最大保留10个版本
+    progressDeadlineSeconds: 600 # 单位秒，600秒后确定程序已卡主
 
   ```
