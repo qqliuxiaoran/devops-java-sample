@@ -1,5 +1,5 @@
 # 如何编写deploy.yaml?
-- 可参考kubesphere创建的工作负载编写
+- 可参考kubesphere工作负载的配置文件
   ```
   kind: Deployment  # 指定kind为Deployment，一个工作负载。工作负载分为Deployment和StatefulSet，对应无状态服务和有状态服务。MySQL应为有状态服务，这里我选了无状态服务只为测试
   apiVersion: apps/v1 
