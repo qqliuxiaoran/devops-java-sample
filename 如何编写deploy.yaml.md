@@ -77,7 +77,7 @@
               - name: volume-k0vveu
                 readOnly: true
                 mountPath: /etc/mysql/conf.d
-            livenessProbe: # 检查容器健康状态策略
+            livenessProbe: # 检查容器健康状态策略。对应还有 就绪检查 和 启动检查，参考kubesphere
               httpGet: # 有HTTP检查，tcp检查，命令行输入检查。像我们SpringBoot项目往往HTTP检查即可。这里我乱加的， MySQL容器明显是要tcp检查比较好
                 # 向容器8080端口/路径发Get请求，响应码为2xx,3xx表示健康
                 scheme: HTTP
