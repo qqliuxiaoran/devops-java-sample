@@ -42,8 +42,10 @@
         containers: # 定义容器组pod中的容器，containers表明可以有多种container
           - name: mysql-master-container
             image: 'mysql:8.0' # 使用$REGISTRY/$DOCKERHUB_NAMESPACE/$APP_NAME:$TAG_NAME从jenkins从流水线上下文中动态取值
-            command: # 可
+            command: # 可覆盖容器启动命令
               - mysqld
+            args: # 启动参数
+              - 'just for test'
             ports: # 声明容器暴露端口
               - name: tcp-3306
                 containerPort: 3306
@@ -57,6 +59,8 @@
                   secretKeyRef:
                     name: mysql-master-security
                     key: MYSQL_ROOT_PASSWORD
+              - name: hello # 自定义环境变量
+                value: world
             resources: # 分配在k8s中使用的资源
               limits: # 限制
                 cpu: 970m
@@ -82,7 +86,16 @@
         #serviceAccountName: default
         #serviceAccount: default
         #securityContext: {}
-        #affinity: {}
+        affinity: # 部署策略: 如下是分散部署，即最大可能去多个k8s节点上
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchLabels:
+                      version: v1
+                      app: mysql-master
+                  topologyKey: kubernetes.io/hostname
         #schedulerName: default-scheduler
     strategy: # 容器更新机制
       type: RollingUpdate # 滚动更新，建议使用。比如:guliamll-product镜像有更新，k8s是停机部分启动部分的方式更新
