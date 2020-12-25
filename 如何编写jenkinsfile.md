@@ -1,9 +1,9 @@
 # 如何编写jenkinsfile?
   ```
   pipeline {
-    agent {
+    agent { // 确定执行环境
       node {
-        label 'maven'
+        label 'maven' 
       }
     }
 
@@ -21,9 +21,9 @@
           APP_NAME = 'devops-java-sample'
       }
 
-      stages { // 定义阶段
+      stages { // 定义阶段与步骤
           stage ('checkout scm') {
-              steps { // 定义单个阶段执行的步骤
+              steps {
                   checkout(scm)
               }
           }
@@ -31,7 +31,7 @@
           stage ('unit test') {
               steps {
                   container ('maven') {
-                      sh 'mvn clean -o -gs `pwd`/configuration/settings.xml test' // 通过单元测试
+                      sh 'mvn clean -gs `pwd`/configuration/settings.xml test' // 通过单元测试
                   }
               }
           }
@@ -39,7 +39,7 @@
           stage ('build & push') {
               steps {
                   container ('maven') {
-                      sh 'mvn -o -Dmaven.test.skip=true -gs `pwd`/configuration/settings.xml clean package' // 代码编译 注意去掉-o
+                      sh 'mvn -Dmaven.test.skip=true -gs `pwd`/configuration/settings.xml clean package' // 代码编译 注意去掉-o
                       sh 'docker build -f Dockerfile-online -t $REGISTRY/$DOCKERHUB_NAMESPACE/$APP_NAME:SNAPSHOT-$BRANCH_NAME-$BUILD_NUMBER .' // 根据docker file生成镜像
                       withCredentials([usernamePassword(passwordVariable : 'DOCKER_PASSWORD' ,usernameVariable : 'DOCKER_USERNAME' ,credentialsId : "$DOCKER_CREDENTIAL_ID" ,)]) {
                           sh 'echo "$DOCKER_PASSWORD" | docker login $REGISTRY -u "$DOCKER_USERNAME" --password-stdin'
@@ -102,6 +102,27 @@
             }
           }
       }
+      
+      // 阶段完成后操作
+      post {
+        always {
+            echo 'One way or another, I have finished'
+            deleteDir() /* clean up our workspace */
+        }
+        success {
+            echo 'I succeeeded!'
+        }
+        unstable {
+            echo 'I am unstable :/'
+        }
+        failure {
+            echo 'I failed :('
+        }
+        changed {
+            echo 'Things were different before...'
+        }
+    }
+      
   }
 
   ```
